@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\AdRepository;
+use Cocur\Slugify\Slugify;
 use Doctrine\DBAL\Types\Types;
+use App\Repository\AdRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AdRepository::class)]
+#[ORM\HasLifecycleCallbacks] // on vient chercher les events qui permettent d'agir avant ou après le persist
 class Ad
 {
     #[ORM\Id]
@@ -34,6 +36,22 @@ class Ad
 
     #[ORM\Column]
     private ?int $rooms = null;
+
+    /**
+     * Permet d'initialiser le slug automatiquement si on ne le donne pas
+     *
+     * @return void
+     */
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function initializeSlug(): void 
+    {
+        if(empty($this->slug))
+        {
+            $slugify = new Slugify();
+            $this->slug = $slugify->slugify($this->title);
+        }
+    }
 
     public function getId(): ?int
     {
