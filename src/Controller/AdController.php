@@ -32,10 +32,13 @@ class AdController extends AbstractController
      * @param Ad $ad
      * @return Response
      */
-    #[Route("/ads{slug}", name:"ads_show")]
+    #[Route("/ads/{slug}", name:"ads_show")]
     public function show(string $slug, Ad $ad):Response
     {
-        // $ad = $repo->findby(["slug"=>$slug]) // mais symfony flex permet de le faire automatiquement (il vérifie par lui même)
+        // $ad = $repo->findOneBy(["slug"=>$slug]) // mais symfony flex permet de le faire automatiquement (il vérifie par lui même)
+
+        dump($ad);// permet de savoir ce qu'on récupère (s'affiche dans la barra symfo)
+        
         return $this->render('ad/show.html.twig', [
             'ad' => $ad
         ]);
