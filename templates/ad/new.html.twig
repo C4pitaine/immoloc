@@ -1,0 +1,18 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Création d'une annonce{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Création d'une nouvelle annonce</h1>
+
+        {{form_start(form)}}
+
+            {{form_widget(form)}}
+            {# Méthode pour créer le bouton dans le form ( mais à l'extérieur de sa création) #}
+            <button type="submit" class="btn btn-primary mt-3">Création d'une annonce</button>
+
+        {{form_end(form)}}
+    </div>
+
+{% endblock %}
