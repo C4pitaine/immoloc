@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Ad;
+use App\Form\AnnonceType;
 use App\Repository\AdRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -52,16 +53,20 @@ class AdController extends AbstractController
         //              ->getForm();
 
         $ad = new Ad();
-        $form = $this->createFormBuilder($ad) // créera notre formulaire
-                     ->add('title')
-                     ->add('introduction')
-                     ->add('content')
-                     ->add('rooms')
-                     ->add('price')
-                     ->getForm();
+        $form = $this->createForm(AnnonceType::class, $ad); // formulaire qu'on a créer de façon externe ( externaliser ) Voir Form/AnnonceType
+
+        // Formulaire de manière interne ( internaliser )
+        // $form = $this->createFormBuilder($ad) // créera notre formulaire
+        //              ->add('title')
+        //              ->add('introduction')
+        //              ->add('content')
+        //              ->add('rooms')
+        //              ->add('price')
+        //              ->getForm();
+        
 
         return $this->render("ad/new.html.twig",[
-            'form' => $form->createView() // créera la vue de notre formulaire
+            'myForm' => $form->createView() // créera la vue de notre formulaire
         ]);
     }
 
