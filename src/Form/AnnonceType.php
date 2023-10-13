@@ -39,10 +39,10 @@ class AnnonceType extends AbstractType
                 'required' => false // permet de ne pas devoir remplir le champ pour pouvoir envoyer le form ( completez ce champ est désactivé)
             ]))
             ->add('coverImage', UrlType::class, $this->getConfiguration("Url fr l'image","Donnez l'adresse de votre image"))
-            ->add('price', TextType::class,$this->getConfiguration("Introduction","Donnez une description globale de votre annonce"))
-            ->add('introduction',TextareaType::class,$this->getConfiguration("Description détaillée","Donnez une description de votre bien"))
-            ->add('content',IntegerType::class,$this->getConfiguration("Nombre de chambre","Donnez le nombre de chambres disponibles"))
-            ->add('rooms',MoneyType::class,$this->getConfiguration("Prix par nuit","Indiquez le prix que vous voulez pour une nuit"))
+            ->add('introduction', TextType::class,$this->getConfiguration("Introduction","Donnez une description globale de votre annonce"))
+            ->add('content',TextareaType::class,$this->getConfiguration("Description détaillée","Donnez une description de votre bien"))
+            ->add('rooms',IntegerType::class,$this->getConfiguration("Nombre de chambre","Donnez le nombre de chambres disponibles"))
+            ->add('price',MoneyType::class,$this->getConfiguration("Prix par nuit","Indiquez le prix que vous voulez pour une nuit"))
         ;
     }
 

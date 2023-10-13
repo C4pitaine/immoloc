@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Ad;
 use App\Form\AnnonceType;
 use App\Repository\AdRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -34,7 +36,7 @@ class AdController extends AbstractController
      * @return Response
      */
     #[Route("/ads/new", name:"ads_create")]
-    public function create(): Response
+    public function create(Request $request ,EntityManagerInterface $manager): Response
     {
         // Méthode avec la création direct du bouton dans la création du form
         // $ad = new Ad();
@@ -63,6 +65,23 @@ class AdController extends AbstractController
         //              ->add('rooms')
         //              ->add('price')
         //              ->getForm();
+
+        //$arrayForm = $request->request->all(); // lorsqu'on appuyera sur le bouton pour envoyer le form , les infos seront stocké dans $arrayForm
+        $form->handleRequest($request); // l'évènement de la requête ( si mon form a été envoyé ou non) 
+
+        if($form->isSubmitted() && $form->isValid()) // permet de savoir si le formulaire a été soumis et validé
+        {
+            //je persist mon objet $ad
+            $manager->persist($ad);
+            //j'envois les persistences dans ma bdd
+            $manager->flush();
+
+            $this->addFlash('success', "L'annonce <strong>".$ad->getTitle()."</strong> a bien été enregistrée"); // permet de créer un message flash, 2 paramètre : son titre et le message
+
+            return $this->redirectToRoute('ads_show',[ // $this->redirectToRoute équivaut à notre header location, il a besoin de la route en question ( et ads_show a besoin d'un paramètre le {slug})
+                'slug' => $ad->getSlug() // on vient directement chercher le getSlug() de l'objet qu'on vient de créer
+            ]);
+        }
         
 
         return $this->render("ad/new.html.twig",[
