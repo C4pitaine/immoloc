@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Ad;
+use App\Form\ImageType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -11,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class AnnonceType extends AbstractType
 {
@@ -43,6 +45,12 @@ class AnnonceType extends AbstractType
             ->add('content',TextareaType::class,$this->getConfiguration("Description détaillée","Donnez une description de votre bien"))
             ->add('rooms',IntegerType::class,$this->getConfiguration("Nombre de chambre","Donnez le nombre de chambres disponibles"))
             ->add('price',MoneyType::class,$this->getConfiguration("Prix par nuit","Indiquez le prix que vous voulez pour une nuit"))
+            // pour les images associès à l'annonce : 
+            ->add('images', CollectionType::class, [
+                'entry_type' => ImageType::class, // on vient chercher le formulaire qu'on a créer pour les images
+                'allow_add' => true, // pour le data_prototype
+                'allow_delete' => true
+            ])
         ;
     }
 
