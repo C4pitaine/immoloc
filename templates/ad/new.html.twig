@@ -2,7 +2,8 @@
 
 {% block title %}Création d'une annonce{% endblock %}
 
-{% form_theme myForm _self %} {# on vient lui donner un theme, on impose un template à twig , pour qui (myForm) , quel theme ( _self -> on créer notre propre thème) #}
+{# {% form_theme myForm 'bootstrap_5_layout.html.twig' %} on vient lui donner un theme, on impose un template à twig , pour qui (myForm) , quel theme ( _self -> on créer notre propre thème) #}
+{# dans ce cas-ci on vient chercher un thème prédéfini #}
 
 {% block body %}
     <div class="container">
@@ -29,25 +30,27 @@
 
 {% endblock %}
 
-{% block form_row %}
-    
+{# mode templatink on vient créer notre template ( mise en form de notre formulaire ) #}
+{# {% block form_row %} #}
+{#     
     <div class="form-group">
         <div class="row">
+            <div class="col-6"> #}
+                {# {{form_label(form)}} #}
+                {# form fait référence à tout le formulaire pour notre template , non prédéfinis il ne fait pas référence à myForm directement #}
+            {# </div>
             <div class="col-6">
-                {{form_label(form)}}
-            </div>
-            <div class="col-6">
-                {{form_widget(form)}}
-            </div>
+                {{form_widget(form)}} #}
+            {# </div>
         </div>
-    </div>
+    </div> #}
 
-{% endblock %}
+{# {% endblock %} #}
 
-{% block text_widget %} 
+{# {% block text_widget %}  #}
 {# on vient templater tout les inputs type text #}
 
-    <input type="text" name="{{full_name}}" id="{{id}}" class="form-control">
+    {# <input type="text" name="{{full_name}}" id="{{id}}" class="form-control"> #}
 
-
-{% endblock %}
+{# 
+{% endblock %} #}

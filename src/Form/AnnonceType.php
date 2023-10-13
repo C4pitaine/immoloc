@@ -29,7 +29,7 @@ class AnnonceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title', TextType::class, [ //type text puis tableau d'option
+            ->add('title', TextType::class, [ //nom de l'input , type text puis tableau d'option
                 'label' => "Titre", // on lui donne l'option label
                 'attr' => [ // on lui donne l'option attr et dedans on met un tableau d'option
                     'placeholder' => "Titre de votre annonce", // on lui donne l'option placeholder ( on pourrait lui donner directement des classes dedans ( exemple : 'class' => 'form-control')
