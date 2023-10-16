@@ -40,7 +40,7 @@ class AnnonceType extends AbstractType
             ->add('slug',TextType::class, $this->getConfiguration('Slug','Adresse web (automatique)',[ // même chose que pour add(title) mais fait avec une function qu'on a crée ( getConfiguration())
                 'required' => false // permet de ne pas devoir remplir le champ pour pouvoir envoyer le form ( completez ce champ est désactivé)
             ]))
-            ->add('coverImage', UrlType::class, $this->getConfiguration("Url fr l'image","Donnez l'adresse de votre image"))
+            ->add('coverImage', UrlType::class, $this->getConfiguration("Url de l'image","Donnez l'adresse de votre image"))
             ->add('introduction', TextType::class,$this->getConfiguration("Introduction","Donnez une description globale de votre annonce"))
             ->add('content',TextareaType::class,$this->getConfiguration("Description détaillée","Donnez une description de votre bien"))
             ->add('rooms',IntegerType::class,$this->getConfiguration("Nombre de chambre","Donnez le nombre de chambres disponibles"))

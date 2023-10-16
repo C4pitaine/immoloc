@@ -57,17 +57,18 @@ class AdController extends AbstractController
 
         $ad = new Ad();
 
-        $image1 = new Image();
-        $image1->setUrl("https://picsum.photos/400/200")
-               ->setCaption('Titre 1');
+        // permet de voir si les images s'affiche correctement ou de rentrer des images prédéfinis
+        // $image1 = new Image();
+        // $image1->setUrl("https://picsum.photos/400/200")
+        //        ->setCaption('Titre 1');
 
-        $ad->addImage($image1);
+        // $ad->addImage($image1);
 
-        $image2 = new Image();
-        $image2->setUrl("https://picsum.photos/400/200")
-               ->setCaption('Titre 2');
+        // $image2 = new Image();
+        // $image2->setUrl("https://picsum.photos/400/200")
+        //        ->setCaption('Titre 2');
         
-        $ad->addImage($image2);
+        // $ad->addImage($image2);
 
 
         $form = $this->createForm(AnnonceType::class, $ad); // formulaire qu'on a créer de façon externe ( externaliser ) Voir Form/AnnonceType
@@ -86,6 +87,13 @@ class AdController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()) // permet de savoir si le formulaire a été soumis et validé
         {
+            // traitement des images associées à l'annonce
+            foreach($ad->getImages() as $image)
+            {
+                $image->setAd($ad);
+                $manager->persist($image);
+            }
+
             //je persist mon objet $ad
             $manager->persist($ad);
             //j'envois les persistences dans ma bdd
@@ -101,6 +109,55 @@ class AdController extends AbstractController
 
         return $this->render("ad/new.html.twig",[
             'myForm' => $form->createView() // créera la vue de notre formulaire
+        ]);
+    }
+
+    
+    
+    /**
+     * Permet d'editer une annonce
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @param Ad $ad
+     * @return Response
+     */
+    #[Route("ads/{slug}/edit", name:"ads_edit")]
+    public function edit(Request $request,EntityManagerInterface $manager, Ad $ad): Response
+    {
+        // il ne fait pas de nouvelle instanciation (on ne créer pas un nouvel objet) on vient faire une injection de dépendance pour remplir $ad pour récupérer notre objet
+        $form = $this->createForm(AnnonceType::class, $ad);
+        $form->handleRequest($request);
+
+        //si je veux que le slug soit automatique -> on a créer une fonction qui slug le title si le slug est vide, dans le cas de la modif on doit le mettre vide si on veut le changer
+        //$ad->setSlug("");
+
+        // on vient vérifier si le formulaire a été envoyé
+        if($form->isSubmitted() && $form->isValid())
+        {
+            //gestion des images
+            foreach($ad->getImages() as $image)
+            {
+                $image->setAd($ad);
+                $manager->persist($image);
+            }
+            $manager->persist($ad);
+            $manager->flush();
+
+            //message flash
+            $this->addFlash(
+                'success',
+                "L'annonce <strong>".$ad->getTitle()."</strong> a bien été modifiée !"
+            );
+
+            // on renvoit vers l'annonce avec le message flash pour la modif
+            return $this->redirectToRoute('ads_show',[
+                'slug' => $ad->getSlug()
+              ]);
+        }
+        return $this->render("ad/edit.html.twig",[
+            "ad" => $ad,
+            "myForm" => $form->createView()
         ]);
     }
 
