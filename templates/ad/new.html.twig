@@ -2,7 +2,7 @@
 
 {% block title %}Création d'une annonce{% endblock %}
 
- {% form_theme myForm _self %} {# on vient lui donner un theme, on impose un template à twig , pour qui (myForm) , quel theme ( _self -> on créer notre propre thème)  #}
+ {% form_theme myForm 'ad/_collection.html.twig' %} {# on vient lui donner un theme, on impose un template à twig , pour qui (myForm) , quel theme ( _self -> on créer notre propre thème)  #}
 {# dans 'bootstrap_5_layout.html.twig' on vient chercher un thème prédéfini #}
 
 {% block body %}
@@ -55,82 +55,7 @@
 {# 
 {% endblock %} #}
 
-{% block _annonce_images_widget %} 
-
-    {# définition du champ annonce_image, la variable form correspond au champ annonce_image #}
-    <p>Ici vous pouvez ajouter vos propres images</p>
-    {{form_widget(form)}}
-    <input type="hidden" id="widgets-counter" value="0">
-    <div class="form-group">
-        <button type="button" id="add-image" class="btn btn-primary">Ajouter une image</button>
-    </div>
-
-{% endblock %}
-
-{% block _annonce_images_entry_row %}
-    {{form_widget(form)}}  {# permet d'afficher chaque formulaire de entry type, n'affichera plus le name (0,1,etc) ( il nous donne plus le prototype mais le formulaire #} 
-{% endblock %}
-
-
-{% block _annonce_images_entry_widget %} {# on vient mettre en form : {{form_widget(form)}} => tout les row ( label,input,help,error )#}
-    <div class="form-group my-2" id="block_{{id}}">
-        <div class="row">
-            <div class="col-10">
-                <div class="row">
-                    <div class="col">
-                        {{form_widget(form.url)}}
-                        {{form_errors(form.url)}}
-                    </div>
-                    <div class="col">
-                        {{form_widget(form.caption)}}
-                        {{form_errors(form.caption)}}
-                    </div>
-                </div>
-            </div>
-            <div class="col-2">
-                <button type="button" class="btn btn-danger" data-action="delete" data-target="#block_{{id}}">X</button>
-            </div>
-        </div>
-    </div>
-{% endblock %}
-
 {% block javascripts %}
-    <script>
-        const addImage = document.querySelector('#add-image')
-        addImage.addEventListener('click',()=>{
-            // compter combien j'ai de form-group pour les indices ex: annonce_image_0_url
-            const widgetCounter = document.querySelector('#widgets-counter')
-            const index = +widgetCounter.value // le + permet de transformer en nombre , value rends tjrs un string
-            const annonceImages = document.querySelector('#annonce_images')
-
-            //recup le prototype dans la div
-            const prototype = annonceImages.dataset.prototype.replace(/__name__/g, index) // drapeur g pour indiquer que l'on va le faire plusieurs fois 
-            annonceImages.insertAdjacentHTML('beforeend',prototype) // permet d'injecter dans une div sans remplacer ce qu'il y a déjà dedans, 2 paramètre , où on le place( beforeend => avant la fin) et ce qu'on place 
-            widgetCounter.value = index+1
-            handleDeleteButtons() // pour mettre à jour la table deletes
-        })
-
-        const updateCounter = () =>{ // si il y a déjà un ajout d'image il commence quand même à 0 , o, a besoin de cette fonction pour qu'il prenne le bon nombre
-            const count = document.querySelectorAll("#annonce_images div.form-group").length
-            document.querySelector("#widgets-counter").value = count
-        }
-
-        const handleDeleteButtons = () =>{
-            let deletes = document.querySelectorAll("button[data-action='delete']")
-            deletes.forEach(button =>{
-                button.addEventListener('click', ()=>{
-                    const target = button.dataset.target
-                    const elementTarget = document.querySelector(target)
-                    if(elementTarget){
-                        elementTarget.remove() // supprime l'élément
-                    }
-                })
-            })
-
-        }
-
-        updateCounter()
-        handleDeleteButtons()
-
-    </script>
+    {# on a mit le contenu dans assets/js/ad.js pour ne pas se répéter et avoir uniquement un fichier qu'on répète #}
+    {{encore_entry_script_tags('annonce')}}
 {% endblock %}
