@@ -2,10 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Form\RegistrationType;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\TooManyLoginAttemptsAuthenticationException;
 
 class AccountController extends AbstractController
@@ -47,4 +52,35 @@ class AccountController extends AbstractController
     {
 
     }
+
+    /**
+     * Permet d'afficher le fomulaire d'inscription ainsi que la gestion de l'inscription de l'utilisateur
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manger
+     * @param UserPasswordHasherInterface $hasher
+     * @return Response
+     */
+    #[Route("/register", name:"account_register")]
+    public function register(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $hasher): Response
+    {
+        $user = new User();
+        $form = $this->createForm(RegistrationType::class, $user);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            // gestion de l'inscription dans la bdd
+            $hash = $hasher->hashPassword($user, $user->getPassword()); // permet de hasher le password
+            $user->setPassword($hash); // on modifie le mot de passe pour lui donner le crypter
+
+            $manager->persist($user);
+            $manager->flush();
+        }
+
+        return $this->render("account/registration.html.twig",[
+            'myForm' => $form->createView()
+        ]);
+    }
+
 }
