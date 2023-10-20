@@ -58,7 +58,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $introduction = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\length(min:100, minMessage:"Votre description doit faire plus de 100 caractères")]
+    #[Assert\Length(min:100, minMessage:"Votre description doit faire plus de 100 caractères")]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
