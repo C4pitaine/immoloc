@@ -94,6 +94,8 @@ class AdController extends AbstractController
                 $manager->persist($image);
             }
 
+            $ad->setAuthor($this->getUser());
+
             //je persist mon objet $ad
             $manager->persist($ad);
             //j'envois les persistences dans ma bdd
