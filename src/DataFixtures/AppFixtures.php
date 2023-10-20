@@ -44,7 +44,7 @@ class AppFixtures extends Fixture
                  ->setIntroduction($faker->sentence())
                  ->setDescription('<p>'.join('</p><p>',$faker->paragraphs(3)).'</p>')
                  ->setPassword($hash)
-                 ->setPicture($picture);
+                 ->setPicture('');
 
             $manager->persist($user);
             $users[] = $user; // ajouter un user au tableau pour les annonces
