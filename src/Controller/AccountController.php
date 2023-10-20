@@ -11,8 +11,10 @@ use Symfony\Component\Form\FormError;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\TooManyLoginAttemptsAuthenticationException;
@@ -74,12 +76,35 @@ class AccountController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid())
         {
+            //gestion de l'image
+            $file = $form['picture']->getData(); // récupère les information de l'image
+            if(!empty($file))
+            {
+                $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename); // permet avec le premier paramètre de donner des informations sur comment gérer mes éléments, Any-Latin enlève les caractères spéciaux
+                $newFilename = $safeFilename."-".uniqid().'.'.$file->guessExtension();
+                try{
+                    $file->move(
+                        $this->getParameter('uploads_directory'), //où on va l'envoyer
+                        $newFilename // qui on envoit
+                    );
+                }catch(FileException $e)
+                {
+                    return $e->getMessage();
+                }
+
+                $user->setPicture($newFilename);
+            }
+
+
             // gestion de l'inscription dans la bdd
             $hash = $hasher->hashPassword($user, $user->getPassword()); // permet de hasher le password
             $user->setPassword($hash); // on modifie le mot de passe pour lui donner le crypter
 
             $manager->persist($user);
             $manager->flush();
+
+            return $this->redirectToRoute('account_login');
         }
 
         return $this->render("account/registration.html.twig",[
@@ -98,11 +123,25 @@ class AccountController extends AbstractController
     public function profile(Request $request, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser();// permet de récup l'utilisateur connecté 
+
+        // pour la validation des immages ( plus tard validation groups )
+        $fileName = $user->getPicture();
+        if(!empty($fileName))
+        {
+            $user->setPicture(
+                new File($this->getParameter('uploads_directory').'/'.$user->getPicture())
+            );
+        }
+
+
         $form = $this->createForm(AccountType::class, $user);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
         {
+            $user->setSlug('')
+                 ->setPicture($fileName);
+             
             $manager->persist($user);
             $manager->flush();
 
@@ -151,7 +190,7 @@ class AccountController extends AbstractController
                 
                 $this->addFlash(
                     'success',
-                    'votre mot de passe a bien été modifié'
+                    'Votre mot de passe a bien été modifié'
                 );
 
                 return $this->redirectToRoute('homepage');
