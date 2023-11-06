@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -37,6 +39,7 @@ class AdController extends AbstractController
      * @return Response
      */
     #[Route("/ads/new", name:"ads_create")]
+    #[IsGranted('ROLE_USER')]
     public function create(Request $request ,EntityManagerInterface $manager): Response
     {
         // Méthode avec la création direct du bouton dans la création du form
@@ -126,6 +129,11 @@ class AdController extends AbstractController
      * @return Response
      */
     #[Route("ads/{slug}/edit", name:"ads_edit")]
+    #[IsGranted(
+        attribute: new Expression('(user === subject and is_granted("ROLE_USER")) or is_granted("ROLE_ADMIN")'), // on le laisse passer que si le user === subject(ad.author) et qu'il a un role user OU si il a un role admin
+        subject: new Expression('args["ad"].getAuthor()'), // agrs -> arguments on vient chercher l'ad en cours et on récupère l'Author
+        message: "Cette annonce ne nous appartient pas , vous ne pouvez pas la modifier"
+    )]
     public function edit(Request $request,EntityManagerInterface $manager, Ad $ad): Response
     {
         // il ne fait pas de nouvelle instanciation (on ne créer pas un nouvel objet) on vient faire une injection de dépendance pour remplir $ad pour récupérer notre objet

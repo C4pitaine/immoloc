@@ -9,6 +9,10 @@
             <p>{{ad.introduction}}</p>
             <p class="h2"><strong>{{ad.rooms}} chambres</strong> pour <strong>{{ad.price}}€ par nuit</strong></p>
             <a href="#" class="btn btn-primary">Réserver</a>
+            {% if (app.user and app.user == ad.author) or is_granted('ROLE_ADMIN') %}
+                <a href="{{path('ads_edit', {'slug':ad.slug})}}" class="btn btn-warning">Modification de l'annonce</a>
+            {% endif %}
+            
         </div>
     </div>
     <div class="container">
@@ -50,17 +54,27 @@
             </div>    
 
             <div class="col">
+            {% set a = ad.author %} {# permet de ne pas devoir répéter ad.author mais juste le a. #}
                 <div class="row">
-                    <div class="col-4">
-                        <img src="https://picsum.photos/64/64" alt="Avatar de Bruce">    
+                    <div class="col-3">
+                        <a href="{{path('user_show', {'slug': a.slug})}}">
+                            {% if a.picture %}
+                                <img src="/uploads/{{a.picture}}" alt="Avatar de {{a.fullName}}" class="avatar avatar-medium">
+                            {% else %}
+                                <img src="http://placehold.it/300x300" alt="Avatar de {{a.fullName}}" class="avatar avatar-medium">
+                            {% endif %}
+                            
+                        </a>
                     </div>
                     <div class="col">
-                        <h3>Bruce Wayne</h3>
-                        <span class="badge badge-primary">3 annonces</span>
+                    <a href="{{path('user_show', {'slug': a.slug})}}" class="text-black">
+                        <h3>{{a.fullName}}</h3>
+                    </a>
+                    <button type="button" class="btn btn-primary">
+                        <span class="badge badge-secondary">{{a.ads | length}}</span>
+                    </button>
                     </div>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem, eaque?</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem, eaque?</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem, eaque?</p>
+                    {{a.description | raw | nl2br}}
                 </div>
             </div>
         </div>

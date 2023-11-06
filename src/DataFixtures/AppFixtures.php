@@ -24,7 +24,21 @@ class AppFixtures extends Fixture
     {
 
         $faker = Factory::create('fr_FR'); // on instantcie notre objet ( pas dans la boucle car besoin que d'une instanciation)
-        $slugify = new Slugify(); // on instantcie notre objet 
+        $slugify = new Slugify(); // on instancie notre objet 
+
+        //création d'un admin
+
+        $admin = New User();
+        $admin->setFirstname('Alexandre')
+              ->setLastName('Sacré')
+              ->setEmail('sacrea@epse.be')
+              ->setPassword($this->passwordHasher->hashPassword($admin, 'password'))
+              ->setDescription('<p>'.join('</p><p>',$faker->paragraphs(3)).'</p>')
+              ->setIntroduction($faker->sentence())
+              ->setRoles(['ROLE_ADMIN'])
+              ->setPicture('');
+        
+        $manager->persist($admin);
 
         //gestion des utilisateurs 
         $users = []; //init d'un tableau pour récup des users pour les annonces
