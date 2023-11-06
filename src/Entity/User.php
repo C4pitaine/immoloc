@@ -12,7 +12,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Assert\NotBlank;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -35,7 +34,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[NotBlank(message:"Veuillez renseigner un mot de passe")] // on ne peut pas le laisser vide
+    #[Assert\NotBlank(message:"Veuillez renseigner un mot de passe")] // on ne peut pas le laisser vide
     private ?string $password = null;
 
     #[Assert\EqualTo(propertyPath:"password", message:"Vous n'avez pas correctement confirmé votre mot de passe")]
@@ -55,7 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $picture = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\length(min:10,max:255, minMessage:"Votre introduction doit faire plus de 10 caractères", maxMessage:"Votre introduction ne doit pas faire plus de 255 caractères")]
+    #[Assert\Length(min:10,max:255, minMessage:"Votre introduction doit faire plus de 10 caractères", maxMessage:"Votre introduction ne doit pas faire plus de 255 caractères")]
     private ?string $introduction = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -87,6 +86,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $slugify = new Slugify();
             $this->slug = $slugify->slugify($this->firstName.' '.$this->lastName.' '.uniqid());
         }
+    }
+
+    /**
+     * Permet d'obtenir le nom complet de l'utilisateur
+     *
+     * @return string
+     */
+    public function getFullName(): string
+    {
+        return $this->firstName." ".$this->lastName;
     }
 
     public function getId(): ?int
