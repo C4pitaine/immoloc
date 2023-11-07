@@ -173,6 +173,30 @@ class AdController extends AbstractController
     }
 
     /**
+     * Permet de supprimer une annonce
+     *
+     * @param Ad $ad
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    #[Route("/ads/{slug}/delete", name:"ads_delete")]
+    #[IsGranted(
+        attribute: new Expression('(user === subject and is_granted("ROLE_USER")) or is_granted("ROLE_ADMIN")'), // on le laisse passer que si le user === subject(ad.author) et qu'il a un role user OU si il a un role admin
+        subject: new Expression('args["ad"].getAuthor()'), // agrs -> arguments on vient chercher l'ad en cours et on récupère l'Author
+        message: "Cette annonce ne nous appartient pas , vous ne pouvez pas la supprimer"
+    )]
+    public function delete(Ad $ad, EntityManagerInterface $manager): Response
+    {
+        $this->addFlash('success', "L'annonce <strong>".$ad->getTitle()."</strong> a bien été supprimée");
+
+        $manager->remove($ad); // permet de supprimer une annonce
+        // on ne doit pas supprimer les annonces car lors de la création de l'entité image on a dit que si on supprimait une annonce cela supprimait les images associées
+        $manager->flush();
+
+        return $this->redirectToRoute('ads_index');
+    }
+
+    /**
      * Permet d'afficher une annonce
      * @param string $slug
      * @param Ad $ad

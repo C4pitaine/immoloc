@@ -11,6 +11,7 @@
             <a href="#" class="btn btn-primary">Réserver</a>
             {% if (app.user and app.user == ad.author) or is_granted('ROLE_ADMIN') %}
                 <a href="{{path('ads_edit', {'slug':ad.slug})}}" class="btn btn-warning">Modification de l'annonce</a>
+                <a href="{{path('ads_delete', {'slug':ad.slug})}}" class="btn btn-danger">Supprimer l'annonce</a>
             {% endif %}
             
         </div>
@@ -71,7 +72,7 @@
                         <h3>{{a.fullName}}</h3>
                     </a>
                     <button type="button" class="btn btn-primary">
-                        <span class="badge badge-secondary">{{a.ads | length}}</span>
+                        <span class="badge badge-secondary">Annonce(s) : {{a.ads | length}}</span>
                     </button>
                     </div>
                     {{a.description | raw | nl2br}}
