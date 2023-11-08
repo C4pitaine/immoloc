@@ -207,7 +207,7 @@ class AdController extends AbstractController
     {
         // $ad = $repo->findOneBy(["slug"=>$slug]) // mais symfony flex permet de le faire automatiquement (il vérifie par lui même)
 
-        dump($ad);// permet de savoir ce qu'on récupère (s'affiche dans la barra symfo)
+        //dump($ad);// permet de savoir ce qu'on récupère (s'affiche dans la barra symfo)
 
         return $this->render('ad/show.html.twig', [
             'ad' => $ad
