@@ -79,6 +79,31 @@ class Ad
         }
     }
 
+    /**
+     * Permet d'obtenir un tableau de jour qui ne sont pas disponible pour cette annonce
+     *
+     * @return array|null Un tableau d'objet DateTime réprésentant les jours d'occupation
+     */
+    public function getNotAvailableDays(): ?array 
+    {
+        $notAvailableDays = [];
+        foreach($this->bookings as $booking)
+        {
+            // calculer les jours qui se trouvent entre la date d'arrivée et de départ
+            //fonction range() de php permet de créer un tableu qui contient chaque étape existante entre 2 nombres
+            //$result = range(10,20,2) // nombre de départ , nombre d'arrivée , calcule les étapes en travaillant par 2
+            //reponse = [10,12,14,16,18,20]
+            $resultat = range($booking->getStartDate()->getTimestamp(),$booking->getEndDate()->getTimestamp(),24*60*60);
+            //[23132123,23132123,23132123,23132123]
+            $days = array_map(function($daysTimestamp){
+                return new \DateTime(date('Y-m-d',$daysTimestamp)); // on formate en année mois jour
+            },$resultat);
+
+            $notAvailableDays = array_merge($notAvailableDays,$days); // fusionne 2 tableaux
+        }
+        return $notAvailableDays;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
