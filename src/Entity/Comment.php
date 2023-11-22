@@ -5,8 +5,10 @@ namespace App\Entity;
 use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ORM\HasLifecycleCallbacks;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Comment
 {
     #[ORM\Id]
@@ -30,6 +32,20 @@ class Comment
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
+
+    /**
+     * Permet de mettre en place la date de création de l'annnonce
+     *
+     * @return void
+     */
+    #[ORM\PrePersist]
+    public function prePersist(): void// elle ne retourne rien car elle fait une action
+    {
+        if(empty($this->createAt))
+        {
+            $this->createAt = new \DateTime();
+        }
+    }
 
     public function getId(): ?int
     {

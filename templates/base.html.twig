@@ -4,7 +4,9 @@
         <meta charset="UTF-8">
         <title>Immoloc - {% block title %}Welcome!{% endblock %}</title> <!--On met immoloc en dehors du block Title poru que chaque fois qu'on mettra un title Immoloc - se trouvera devant-->
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="robots" content="noindex" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
             {{ encore_entry_link_tags('app') }}
             {{ encore_entry_script_tags('app') }}
         {% block stylesheets %}{% endblock %}
