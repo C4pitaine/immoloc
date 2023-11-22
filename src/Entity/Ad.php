@@ -57,10 +57,14 @@ class Ad
     #[ORM\OneToMany(mappedBy: 'ad', targetEntity: Booking::class)]
     private Collection $bookings;
 
+    #[ORM\OneToMany(mappedBy: 'ad', targetEntity: Comment::class, orphanRemoval: true)]
+    private Collection $comments;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
         $this->bookings = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     /**
@@ -259,6 +263,36 @@ class Ad
             // set the owning side to null (unless already changed)
             if ($booking->getAd() === $this) {
                 $booking->setAd(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setAd($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getAd() === $this) {
+                $comment->setAd(null);
             }
         }
 
