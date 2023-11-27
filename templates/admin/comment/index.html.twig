@@ -1,0 +1,47 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Hello AdminCommentController!{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="my-3">Administration des commentaires</h1>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Date</th>
+                    <th>Auteur</th>
+                    <th>Commentaire</th>
+                    <th>Note</th>
+                    <th>Annonce</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for comment in comments %}
+                    <tr>
+                        <td>{{comment.id}}</td>
+                        <td>{{comment.createAt | date("d/m/Y")}}</td>
+                        <td>
+                            {% if comment.author.picture %}
+                                <img src="/uploads/{{comment.author.picture}}" alt="avatar de {{comment.author.fullName}}">
+                            {% else %}
+                                <img src="https://www.placehold.it/18x18" alt="avatar par défaut">
+                            {% endif %}
+                            {{comment.author.fullName}}
+                        </td>
+                        <td>{{comment.content}}</td>
+                        <td>
+                            <span class="badge bg-dark">{{comment.rating}}</span>
+                        </td>
+                        <td>{{comment.ad.title}}</td>
+                        <td class="text-center">
+                            <a href="#" class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                            <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

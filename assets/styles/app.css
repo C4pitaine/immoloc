@@ -57,3 +57,8 @@
 .rating i{
     color: goldenrod;
 }
+
+.avatar-micro{
+    max-width: 18px;
+    max-height: 18px;
+}
