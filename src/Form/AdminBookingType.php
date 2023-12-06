@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Ad;
 use App\Entity\User;
 use App\Entity\Booking;
 use App\Form\ApplicationType;
@@ -16,10 +17,10 @@ class AdminBookingType extends ApplicationType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('startDate', DateType::class,$this->getConfiguration("Date d'arrivée","La date à laquelle vous comptez arriver",[
+            ->add('startDate', DateType::class, $this->getConfiguration("Date d'arrivée", "La date à laquelle l'utilisateur arrive",[
                 "widget" => "single_text"
             ]))
-            ->add('endDate', DateType::class,$this->getConfiguration("Date d'arrivée","La date à laquelle vous comptez arriver",[
+            ->add('endDate', DateType::class, $this->getConfiguration("Date de départ", "La date à laquelle l'utilisateur va partir",[
                 "widget" => "single_text"
             ]))
             ->add('comment', TextareaType::class, $this->getConfiguration("Commentaire","Commentaire de l'utilisateur",[

@@ -25,7 +25,7 @@ class Booking
     private ?Ad $ad = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Assert\GreaterThan("today",message: "La date d'arrivée doit être ultérieur à la date d'aujourd'hui")] // la date doit être plus grand qu'aujourd'hui
+    #[Assert\GreaterThan("today",message: "La date d'arrivée doit être ultérieur à la date d'aujourd'hui", groups:["front"])] // la date doit être plus grand qu'aujourd'hui
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
