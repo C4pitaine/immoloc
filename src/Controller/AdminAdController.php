@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Ad;
 use App\Form\AnnonceType;
 use App\Repository\AdRepository;
+use App\Service\PaginationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,24 +21,14 @@ class AdminAdController extends AbstractController
      * @return Response
      */
     #[Route('/admin/ads/{page<\d+>?1}', name: 'admin_ads_index')] // Route('/admin/ads/{page?1}', name: 'admin_ads_index', requirements:["page"=>"\d+"])
-    public function index(AdRepository $repo, int $page): Response
+    public function index(PaginationService $pagination,int $page): Response
     {
-        //$ads = $repo->findBy([],[],5,0); // pas de critère (il donnera tout), pas d'order, limit de 5 , offset 0
-
-        $limit = 10;
-        $start = $page * $limit - $limit;
-        //page 1 * limit = 10 - limit = 0 
-        //page 2 * limit = 20 - limit = 10
-        $total = count($repo->findAll());
-        //3.1 = 4
-        $pages = ceil($total/$limit); // arrondir au supérieur
-
-        $ads = $repo->findBy([],[],$limit,$start);
+        $pagination->setEntityClass(Ad::class)
+                   ->setPage($page)
+                   ->setLimit(10);
 
         return $this->render('admin/ad/index.html.twig', [
-            'ads' => $ads,
-            'pages' => $pages,
-            'page' => $page
+            'pagination' => $pagination
         ]);
     }
 
