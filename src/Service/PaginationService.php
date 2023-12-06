@@ -58,6 +58,13 @@ class PaginationService{
      */
     private $templatePath;
 
+    /**
+     * Un tableau pour ordonner mes résultats
+     *
+     * @var array|null
+     */
+    private ?array $order = null;
+
 
 
     /**
@@ -119,6 +126,28 @@ class PaginationService{
     public function getLimit(): int
     {
         return $this->limit;
+    }
+
+    /**
+     * Permet de spécifier l'ordre que l'on souhaite afficher pour les résultats
+     *
+     * @param array $myOrder
+     * @return self
+     */
+    public function setOrder(array $myOrder): self
+    {
+        $this->order = $myOrder;
+        return $this;
+    }
+
+        /**
+     * Permet de récupérer le tableau des order
+     *
+     * @return array
+     */
+    public function getOrder(): array
+    {
+        return $this->order;
     }
 
     /**
