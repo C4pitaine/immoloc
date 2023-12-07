@@ -59,7 +59,7 @@ class PaginationService{
     private $templatePath;
 
     /**
-     * Un tableau pour ordonner mes résultats
+     * un tableau pour ordonner les résultats
      *
      * @var array|null
      */
@@ -80,7 +80,7 @@ class PaginationService{
      */
     public function __construct(EntityManagerInterface $manager, Environment $twig, RequestStack $request, string $templatePath)
     {
-        $this->route = $request->getCurrentRequest()->attributes->get('_route'); // récupère le nom de la route actuelle
+        $this->route = $request->getCurrentRequest()->attributes->get('_route');
         $this->manager = $manager;
         $this->twig = $twig;
         $this->templatePath = $templatePath;
@@ -140,7 +140,7 @@ class PaginationService{
         return $this;
     }
 
-        /**
+    /**
      * Permet de récupérer le tableau des order
      *
      * @return array
@@ -194,7 +194,7 @@ class PaginationService{
 
         return $this->manager
                         ->getRepository($this->entityClass)
-                        ->findBy([],[],$this->limit,$offset);
+                        ->findBy([],$this->order,$this->limit,$offset);
     }
 
 
@@ -208,7 +208,7 @@ class PaginationService{
     {
         if(empty($this->entityClass))
         {
-            throw new \Exception("Vous n'avez pas spécifié l'entité sur laquelle nous devons paginer! Utilisez la méthode setPage() de votre objet PaginationService");
+            throw new \Exception("Vous n'avez pas spécifié l'entité sur laquelle nous devons paginer! Utilisez la méthode setPages() de votre objet PaginationService");
         }
         // conntaire le total des enregirstement de la tablez
         // $repo = $this->manager->getRepository($this->entityClass);
